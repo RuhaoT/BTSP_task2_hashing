@@ -1,0 +1,11 @@
+# To: Ruhao:
+
+For this task, we aim to evaluate the hashing performance of our proposed BTSP models.
+
+Please use the script ./main/main_hash_mnist as an example for running the experiments.
+All control models are implemented in the model directory.
+The key objective is to explore under which parameter configurations the BTSP-based data-dependent hashing can outperform the FLY algorithms.
+
+I suggest focusing on
+(1) optimizing variables such as  fq, binary_coding, and other relevant parameters (?we could discuss it first). Achieving consistent conclusions across at least two datasets would be highly valuable.
+(2) implement equ.(1) on our overleaf, try to search the threshold \theta and the learning rate, and compare the performance with the (1) setups.
