@@ -35,12 +35,12 @@ class LSHmAPExperiment(auto_experiment.ExperimentInterface):
     def __init__(self) -> None:
 
         self.meta_params = MetaParams(
-            dataset_name=['mnist10k', 'mnist10k_label', 'sift10k', 'gist10k'],
-            training_data_num=[1000, 3000, 5000, 7000, 9000],
+            dataset_name=['mnist10k', 'glove10k', 'sift10k', 'gist10k'],
+            training_data_num=5000,
             hash_length=[2, 4, 8, 12, 16, 20, 24],
-            space_ratio=[ 1, 4, 8, 12, 20],
+            space_ratio=[1, 4, 8, 12, 20],
             binary_mode=[True, False],
-            sampling_ratio=[0.01, 0.05, 0.1, 0.2],
+            sampling_ratio=[0.01, 0.05, 0.1, 0.2, 0.3, 0.6],
             random_seed=1,
         )
         # RH: the above parameter would faciliate your rapid validation. We should consider the following setup for publishable results
@@ -117,15 +117,15 @@ class LSHmAPExperiment(auto_experiment.ExperimentInterface):
 
         utils.setup_seed(parameters.random_seed)
 
-        print("Testing hashing length:", hash_length, "space size", space_ratio)
+        # print("Testing hashing length:", hash_length, "space size", space_ratio)
         embedding_size = int(input_dim * space_ratio)
         btsp_fq = 2 * hash_length / embedding_size
-        print(
-            "\n Sample ratio of input patterns: ",
-            sampling_ratio,
-            "space ratio",
-            space_ratio,
-        )
+        # print(
+        #     "\n Sample ratio of input patterns: ",
+        #     sampling_ratio,
+        #     "space ratio",
+        #     space_ratio,
+        # )
         btsp_model = btsp_coding_lsh.btsp_lsh(
             train_data,
             hash_length,
@@ -135,10 +135,10 @@ class LSHmAPExperiment(auto_experiment.ExperimentInterface):
             device="cuda",
         )
         btsp_mAP = utils.tesht_map_dist(train_data, btsp_model.hashes)
-        bstp_msg = "mean average precision of flylsh is equal to {:.4f}".format(
-            btsp_mAP
-        )
-        print("BTSP-like Hashing: ", bstp_msg)
+        # bstp_msg = "mean average precision of flylsh is equal to {:.4f}".format(
+        #     btsp_mAP
+        # )
+        # print("BTSP-like Hashing: ", bstp_msg)
         # the following we compared the performance with advanced hashing algorithmns
         fly_model = flylsh.flylsh(
             train_data,
@@ -148,21 +148,21 @@ class LSHmAPExperiment(auto_experiment.ExperimentInterface):
             binary_mode=binary_mode,
         )
         fly_mAP = utils.tesht_map_dist(train_data, fly_model.hashes)
-        fly_msg = "mean average precision of flylsh is equal to {:.4f}".format(fly_mAP)
-        print("FLY algo: ", fly_msg)
+        # fly_msg = "mean average precision of flylsh is equal to {:.4f}".format(fly_mAP)
+        # print("FLY algo: ", fly_msg)
         WTA_model = wtahash.WTAHash(train_data, hash_length)
         wta_mAP = utils.tesht_map_dist(train_data, WTA_model.hashes)
-        msg = "mean average precision of flylsh is equal to {:.4f}".format(wta_mAP)
-        print("WTA: ", msg)
+        # msg = "mean average precision of flylsh is equal to {:.4f}".format(wta_mAP)
+        # print("WTA: ", msg)
         lsh_model = lsh.LSH(train_data, hash_length)
         lsh_mAP = utils.tesht_map_dist(train_data, lsh_model.hashes)
-        msg = "mean average precision of dense_model is equal to {:.4f}".format(lsh_mAP)
-        print("LSH: ", msg)
+        # msg = "mean average precision of dense_model is equal to {:.4f}".format(lsh_mAP)
+        # print("LSH: ", msg)
         # sparse_model = btsp_sparse(train_data, hash_length, sampling_ratio, embedding_size,
         #                       binary_mode=binary_mode)
         # sparse_mAP = tesht_map_dist(train_data, sparse_model.hashes)
         # msg = 'mean average precision of sparse_model is equal to {:.4f}'.format(sparse_mAP)
-        print("Sparse: ", msg)
+        # print("Sparse: ", msg)
 
         self.result_dict["experiment_index"].append(parameters.experiment_index)
         self.result_dict["input_dim"].append(input_dim)
@@ -178,7 +178,7 @@ class LSHmAPExperiment(auto_experiment.ExperimentInterface):
 
         # for debugging
         self.results = pd.DataFrame(self.result_dict)
-        print(self.results)
+        # print(self.results)
         
         # save both params and results to csv
         self.results.to_csv(os.path.join(self.experiment_folder, "results.csv"))

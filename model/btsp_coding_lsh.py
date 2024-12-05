@@ -31,7 +31,7 @@ class btsp_lsh(LSH):
 		# self.data = (self.data - self.data.min()) / (self.data.max() - self.data.min())
 
 		self.hashes = torch.zeros((data.shape[0], embedding_size))
-		sample_num = int(0.6 * data.shape[1]) # the sparsity 0.6 is used in our paper
+		sample_num = int(sampling_ratio * data.shape[1]) # the sparsity 0.6 is used in our paper
 		weight_seed = torch.rand(data.shape[1], embedding_size)
 		yindices = torch.arange(weight_seed.shape[1])[None, :]
 		xindices = weight_seed.argsort(axis=0)[-sample_num:, :]  # maintain the top-k values and set to one
