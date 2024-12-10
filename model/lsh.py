@@ -1,6 +1,6 @@
 from .utils import *
 class LSH(object):
-	def __init__(self, data, hash_length):
+	def __init__(self, data, hash_length, device='cpu'):
 		"""
 		data: Nxd matrix
 		hash_length: scalar
@@ -12,7 +12,7 @@ class LSH(object):
 		self.L2_distance = []
 		self.data = data
 		self.data = data
-		self.weights = torch.rand((data.shape[1], hash_length))
+		self.weights = torch.rand((data.shape[1], hash_length), device=device)
 		self.mem = self.data @ self.weights
 		self.hashes = self.mem
 		self.maxl1distance = 2 * self.hash_length

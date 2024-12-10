@@ -1,0 +1,5 @@
+,dataset_name,training_data_num,hash_length,space_ratio,btsp_fq_constant,binary_mode,btsp_sampling_ratio,random_seed,experiment_index
+0,mnist10k,5000,24,16,[2],True,[0.2],1,0
+1,sift10k,5000,24,16,[2],True,[0.2],1,1
+2,gist10k,5000,24,16,[2],True,[0.2],1,2
+3,glove10k,5000,24,16,[2],True,[0.2],1,3

@@ -1,7 +1,7 @@
 from .lsh import *
 
 class flylsh(LSH):
-	def __init__(self, data, hash_length, sampling_ratio, embedding_size, binary_mode = False):
+	def __init__(self, data, hash_length, sampling_ratio, embedding_size, binary_mode = False, device = 'cpu'):
 		"""
 		data: Nxd matrix
 		hash_length: scalar
@@ -15,12 +15,13 @@ class flylsh(LSH):
 		K = embedding_size // hash_length
 		# data normalization
 		self.data = data
+		self.device = device
 
 		num_projections = int(sampling_ratio * data.shape[1])
-		weights = torch.rand((data.shape[1], embedding_size))
+		weights = torch.rand((data.shape[1], embedding_size), device=device)
 		yindices = np.arange(weights.shape[1])[None, :]
 		xindices = weights.argsort(axis=0)[-num_projections:, :] # maintain the top-k values and set to one
-		self.weights = torch.zeros_like(weights)
+		self.weights = torch.zeros_like(weights, device=device)
 		self.weights[xindices, yindices] = 1  # sparse projection vectors
 
 		#step2: projection and maintain the salient hash_length vectors.
@@ -34,7 +35,7 @@ class flylsh(LSH):
 		# self.hashes[xindices, yindices] = True  # choo
 
 		# self.mem = self.data @ self.weights
-		self.hashes = torch.zeros_like(all_activations)
+		self.hashes = torch.zeros_like(all_activations, device=device)
 		# Type 2: Mem representations
 		xindices = np.arange(data.shape[0])[:, None]
 		yindices = self.mem.argsort(axis=1)[:, -hash_length:]  # representation dimension
